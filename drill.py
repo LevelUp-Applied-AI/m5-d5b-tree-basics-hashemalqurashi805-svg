@@ -13,54 +13,41 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 
 
 def train_decision_tree(X_train, y_train, max_depth=5, random_state=42):
-    """Train a DecisionTreeClassifier.
-
-    Args:
-        X_train: Training features.
-        y_train: Training labels.
-        max_depth: Maximum tree depth.
-        random_state: Random seed.
-
-    Returns:
-        Fitted DecisionTreeClassifier.
-    """
-    # TODO: Create and fit a DecisionTreeClassifier
-    pass
+    """Train a DecisionTreeClassifier."""
+    model = DecisionTreeClassifier(max_depth=max_depth, random_state=random_state)
+    model.fit(X_train, y_train)
+    return model
 
 
 def get_feature_importances(model, feature_names):
-    """Extract feature importances sorted by importance (descending).
-
-    Args:
-        model: Fitted tree-based model with feature_importances_ attribute.
-        feature_names: List of feature names.
-
-    Returns:
-        Dictionary mapping feature name to importance value, sorted descending.
-    """
-    # TODO: Extract importances and return as a sorted dictionary
-    pass
+    """Extract feature importances sorted by importance (descending)."""
+    importances = model.feature_importances_
+    importance_dict = dict(zip(feature_names, importances))
+    # ترتيب تنازلي
+    sorted_importance = dict(sorted(importance_dict.items(), key=lambda item: item[1], reverse=True))
+    return sorted_importance
 
 
 def train_balanced_forest(X_train, y_train, X_test, y_test,
                           n_estimators=100, random_state=42):
-    """Train a RandomForest with balanced class weights and return metrics.
-
-    Args:
-        X_train, y_train: Training data.
-        X_test, y_test: Test data.
-        n_estimators: Number of trees.
-        random_state: Random seed.
-
-    Returns:
-        Dictionary with keys: 'precision', 'recall', 'f1'.
-    """
-    # TODO: Train RandomForestClassifier with class_weight='balanced',
-    #       predict on test set, compute and return metrics
-    pass
+    """Train a RandomForest with balanced class weights and return metrics."""
+    model = RandomForestClassifier(
+        n_estimators=n_estimators, 
+        class_weight='balanced', 
+        random_state=random_state
+    )
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    
+    return {
+        'precision': precision_score(y_test, y_pred),
+        'recall': recall_score(y_test, y_pred),
+        'f1': f1_score(y_test, y_pred)
+    }
 
 
 if __name__ == "__main__":
+    # تأكد أن مسار الملف صحيح في مستودعك
     df = pd.read_csv("data/telecom_churn.csv")
     features = ["tenure", "monthly_charges", "total_charges",
                 "num_support_calls", "senior_citizen", "has_partner",

@@ -67,7 +67,7 @@ if __name__ == "__main__":
     if tree:
         importances = get_feature_importances(tree, features)
         if importances:
-            print(f"Top features: {list(importances.items())[:3]}")
+            print(f"Top features: {list(importances.keys())[:3]}")
 
     # Task 3
     metrics = train_balanced_forest(X_train, y_train, X_test, y_test)
